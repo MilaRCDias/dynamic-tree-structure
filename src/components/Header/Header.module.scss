@@ -15,12 +15,13 @@
   background-color: var(--text-color);
   color: var(--bg-color);
   font-size: 1rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 
   &:hover {
     filter: brightness(1.1);
   }
-
 
   &:focus {
     outline: 2px solid var(--text-color);

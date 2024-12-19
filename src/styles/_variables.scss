@@ -2,7 +2,6 @@ $light-bg: #ffffff;
 $light-text: #000000;
 $light-bg-secondary: #ebebeb;
 
-
 $dark-bg: #333333;
 $dark-text: #ffffff;
 $dark-bg-secondary: #4f4f4f;
@@ -13,7 +12,7 @@ $dark-bg-secondary: #4f4f4f;
   --bg-color-light: #{$light-bg-secondary};
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-color: #{$dark-bg};
   --text-color: #{$dark-text};
   --bg-color-light: #{$dark-bg-secondary};
