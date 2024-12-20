@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { getLeafData, getTreeData } from '../api/getData';
 
 export interface TreeNode {
-  id?: string;
+  id: string;
   children?: TreeNode[];
   label: string;
 }
