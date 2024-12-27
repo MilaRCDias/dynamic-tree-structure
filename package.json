@@ -39,6 +39,7 @@
     "typescript-eslint": "^8.18.1"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.4.0",
