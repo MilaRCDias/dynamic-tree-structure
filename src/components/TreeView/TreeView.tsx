@@ -22,9 +22,7 @@ const TreeView: React.FC = () => {
 
   const ref = useRef<HTMLDivElement>(null);
 
-  console.log('TreeView data:', treeData);
   useEffect(() => {
-    console.log('TreeView useEffect', ref);
     if (!ref.current || treeData.length === 0) return;
     invariant(ref.current);
     return combine(
@@ -76,6 +74,7 @@ const TreeView: React.FC = () => {
         <div className={styles.tree} ref={ref}>
           {treeData.map((node, index, array) => {
             const type = getItemMode(node, index, array);
+
             return <TreeNode key={node.id} node={node} level={0} mode={type} index={index} />;
           })}
         </div>

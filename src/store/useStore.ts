@@ -44,6 +44,8 @@ interface TreeState {
   getPathToItem: (itemId: string) => string[];
   getMoveTargets: ({ itemId }: { itemId: string }) => TreeNode[];
   getChildrenOfItem: (itemId: string) => TreeNode[];
+  highlightedNodes: Set<string>;
+  toggleHighlight: (node: TreeNode) => void;
 }
 
 export const useStore = create<TreeState>((set, get) => ({
@@ -54,7 +56,7 @@ export const useStore = create<TreeState>((set, get) => ({
   leafError: null,
   lastAction: null,
   leafCache: {},
-
+  highlightedNodes: new Set(),
   fetchAndSetTreeData: async () => {
     set({ loading: true, error: null });
     try {
@@ -71,7 +73,6 @@ export const useStore = create<TreeState>((set, get) => ({
   fetchLeafData: async (nodeId: string) => {
     const { leafCache } = get();
     if (leafCache[nodeId]) {
-      // Use cached data if available
       set({ leafData: leafCache[nodeId] });
       return;
     }
@@ -145,6 +146,28 @@ export const useStore = create<TreeState>((set, get) => ({
     const { treeData } = get();
     const tree = createTreeManipulationHelpers();
     return tree.getChildrenOfItem(treeData, itemId) || [];
+  },
+  toggleHighlight: (node: TreeNode) => {
+    const { highlightedNodes } = get();
+    const updated = new Set(highlightedNodes);
+
+    const addHighlight = (node: TreeNode) => {
+      updated.add(node.id);
+      node.children?.forEach(addHighlight);
+    };
+
+    const removeHighlight = (node: TreeNode) => {
+      updated.delete(node.id);
+      node.children?.forEach(removeHighlight);
+    };
+
+    if (updated.has(node.id)) {
+      removeHighlight(node);
+    } else {
+      addHighlight(node);
+    }
+
+    set({ highlightedNodes: updated });
   },
 }));
 

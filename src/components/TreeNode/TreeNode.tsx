@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import { TreeNode as TreeNodeType, useStore } from '../../store/useStore';
 import styles from './TreeNode.module.scss';
 
 import invariant from 'tiny-invariant';
-
 import { type Instruction, type ItemMode } from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { DependencyContext, TreeContext } from '../../DnD/context';
 import { getItemMode } from '../../helpers/getItemMode';
+import LeafData from '../LeafData/LeafData';
 
 export const indentPerLevel = 32;
 
@@ -24,11 +24,12 @@ export interface TreeNodeProps {
 }
 
 const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
-  const { fetchLeafData, leafData, leafError } = useStore();
+  const { fetchLeafData, leafData, leafError, toggleHighlight, highlightedNodes } = useStore();
   const isLeaf = !node.children || node.children.length === 0;
   const isOpenLeaf = isLeaf && leafData && leafData.id === node.id;
   const isLeafError = isLeaf && leafError && leafError.id === node.id;
   const [isExpanded, setIsExpanded] = useState(isOpenLeaf);
+  const [localError, setLocalError] = useState<boolean>(!!isLeafError);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,8 +37,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
       fetchLeafData(node.id);
       setIsExpanded(true);
     }
+    toggleHighlight(node);
   };
 
+  const isHighlighted = highlightedNodes.has(node.id);
   const containerRef = useRef<HTMLButtonElement>(null);
 
   const [instruction, setInstruction] = useState<Instruction | null>(null);
@@ -108,55 +111,48 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
     );
   }, [dispatch, node, mode, level, uniqueContextId, extractInstruction, attachInstruction, getPathToItem]);
 
+  useEffect(() => {
+    if (isLeafError) {
+      setLocalError(true);
+      const timeout = setTimeout(() => setLocalError(false), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isLeafError]);
+
   return (
     <>
-      <div className={styles.container} style={{ position: 'relative' }}>
-        <div>
-          <button
-            id={`tree-item-${node.id}`}
-            ref={containerRef}
-            type="button"
-            style={{ paddingLeft: level * indentPerLevel }}
-            data-index={index}
-            data-level={level}
-            data-testid={`tree-item-${node.id}`}
-            className={`${styles.node} ${isLeaf ? styles.leaf : ''}`}
-            onClick={handleClick}
-          >
-            <div className={styles.innerWrapper}>
-              {isLeaf && <span className={styles.leafIcon}>🍃</span>}
-              <span className={styles.label}>{node.label}</span>
-            </div>
-            {instruction ? <DropIndicator instruction={instruction} /> : null}
-          </button>
-        </div>
+      <div
+        className={`${styles.container} ${isHighlighted ? styles.highlighted : ''}`}
+        style={{ position: 'relative' }}
+      >
+        <button
+          id={`tree-item-${node.id}`}
+          ref={containerRef}
+          type="button"
+          style={{ paddingLeft: level * indentPerLevel }}
+          data-index={index}
+          data-level={level}
+          data-testid={`tree-item-${node.id}`}
+          className={`${styles.node} ${isLeaf ? styles.leaf : ''}`}
+          onClick={handleClick}
+        >
+          <div className={styles.innerWrapper}>
+            {isLeaf && <span className={styles.leafIcon}>🍃</span>}
+            <span className={styles.label}>{node.label}</span>
+          </div>
+          {instruction ? <DropIndicator instruction={instruction} /> : null}
+        </button>
       </div>
-      {isLeafError && <div className={styles.error}>{leafError.message}</div>}
-      {isOpenLeaf && isExpanded && (
-        <div className={styles.additionalData} style={{ marginLeft: level * indentPerLevel }}>
-          <button onClick={() => setIsExpanded(!isExpanded)}>X</button>
-          <p>
-            <strong>Description:</strong> {leafData.description}
-          </p>
-          <p>
-            <strong>Created At:</strong> {new Date(leafData.createdAt).toLocaleString()}
-          </p>
-          <p>
-            <strong>Created By:</strong> {leafData.createdBy}
-          </p>
-          <p>
-            <strong>Last Modified At:</strong> {new Date(leafData.lastModifiedAt).toLocaleString()}
-          </p>
-          <p>
-            <strong>Last Modified By:</strong> {leafData.lastModifiedBy}
-          </p>
+      {isLeafError && localError && (
+        <div className={styles.error} style={{ marginLeft: level * indentPerLevel }}>
+          {leafError.message}
         </div>
       )}
+      {isOpenLeaf && isExpanded && <LeafData leafData={leafData} level={level} onClose={() => setIsExpanded(false)} />}
       {node.children && node.children.length > 0 && (
         <div>
           {node.children.map((child, index, array) => {
             const childType: ItemMode = getItemMode(node, index, array);
-
             return <TreeNode node={child} key={child.id} level={level + 1} mode={childType} index={index} />;
           })}
         </div>
@@ -165,4 +161,4 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
   );
 };
 
-export default TreeNode;
+export default memo(TreeNode);

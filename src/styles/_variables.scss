@@ -1,19 +1,31 @@
 $light-bg: #ffffff;
 $light-text: #000000;
 $light-bg-secondary: #ebebeb;
+$light-text-color-error: #ff0000;
+$light-bg-error: #feb7b7;
+$light-bg-color-highlight: #6bbff7;
 
 $dark-bg: #333333;
 $dark-text: #ffffff;
 $dark-bg-secondary: #4f4f4f;
+$dark-text-color-error: #ff0000;
+$dark-bg-error: #feb7b7;
+$dark-bg-color-highlight: #53d1fb;
 
 :root {
   --bg-color: #{$light-bg};
   --text-color: #{$light-text};
   --bg-color-light: #{$light-bg-secondary};
+  --text-color-error: #{$light-text-color-error};
+  --bg-color-error: #{$light-bg-error};
+  --bg-color-highlight: #{$light-bg-color-highlight};
 }
 
 [data-theme='dark'] {
   --bg-color: #{$dark-bg};
   --text-color: #{$dark-text};
   --bg-color-light: #{$dark-bg-secondary};
+  --text-color-error: #{$dark-text-color-error};
+  --bg-color-error: #{$dark-bg-error};
+  --bg-color-highlight: #{$dark-bg-color-highlight};
 }
