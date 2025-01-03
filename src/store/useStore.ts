@@ -35,6 +35,7 @@ interface TreeState {
   loading: boolean;
   error: string | null;
   leafError: { message: string; id: string } | null;
+  leafCache: Record<string, TreeLeafNode>;
   lastAction: { type: string; itemId?: string; targetId?: string } | null;
   fetchAndSetTreeData: () => Promise<void>;
   fetchLeafData: (nodeId: string) => Promise<void>;
@@ -52,6 +53,7 @@ export const useStore = create<TreeState>((set, get) => ({
   error: null,
   leafError: null,
   lastAction: null,
+  leafCache: {},
 
   fetchAndSetTreeData: async () => {
     set({ loading: true, error: null });
@@ -67,12 +69,27 @@ export const useStore = create<TreeState>((set, get) => ({
   },
 
   fetchLeafData: async (nodeId: string) => {
+    const { leafCache } = get();
+    if (leafCache[nodeId]) {
+      // Use cached data if available
+      set({ leafData: leafCache[nodeId] });
+      return;
+    }
+
     set({ loading: true, leafError: null });
     try {
       const data = await getLeafData(nodeId);
-      set({ leafData: { ...data, id: nodeId } });
+      const leafNodeData = { ...data, id: nodeId };
+
+      console.log('Leaf Node Data:', data, leafNodeData);
+      set((state) => ({
+        leafCache: { ...state.leafCache, [nodeId]: leafNodeData },
+        leafData: leafNodeData,
+      }));
     } catch (err) {
-      set({ leafError: { message: `Error fetching leaf data: ${(err as Error).message}`, id: nodeId } });
+      set({
+        leafError: { message: `Error fetching leaf data: ${(err as Error).message}`, id: nodeId },
+      });
     } finally {
       set({ loading: false });
     }

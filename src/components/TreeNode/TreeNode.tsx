@@ -25,15 +25,16 @@ export interface TreeNodeProps {
 
 const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
   const { fetchLeafData, leafData, leafError } = useStore();
-
   const isLeaf = !node.children || node.children.length === 0;
   const isOpenLeaf = isLeaf && leafData && leafData.id === node.id;
   const isLeafError = isLeaf && leafError && leafError.id === node.id;
+  const [isExpanded, setIsExpanded] = useState(isOpenLeaf);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isLeaf) {
       fetchLeafData(node.id);
+      setIsExpanded(true);
     }
   };
 
@@ -131,8 +132,9 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
         </div>
       </div>
       {isLeafError && <div className={styles.error}>{leafError.message}</div>}
-      {isOpenLeaf && (
-        <div className={styles.additionalData}>
+      {isOpenLeaf && isExpanded && (
+        <div className={styles.additionalData} style={{ marginLeft: level * indentPerLevel }}>
+          <button onClick={() => setIsExpanded(!isExpanded)}>X</button>
           <p>
             <strong>Description:</strong> {leafData.description}
           </p>

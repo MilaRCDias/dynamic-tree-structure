@@ -1,16 +1,45 @@
 .node {
   list-style-type: none;
-  padding: 5px;
+  padding: 0.75rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  background: none;
+  border: none;
+  font-size: 1rem;
 }
-
 
 .label {
   display: flex;
   align-items: center;
+  color: var(--text-color);
+  flex-grow: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .leaf {
   padding-left: 20px;
+}
+
+.innerWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.additionalData {
+  padding: 0.5rem;
+  border: 1px solid var(--text-color);
+  width: 60%;
+}
+
+.container {
+  border-radius: 3;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(9, 30, 66, 0.06);
+  }
 }
