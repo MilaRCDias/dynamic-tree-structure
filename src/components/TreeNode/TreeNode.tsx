@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { TreeNode as TreeNodeType, useStore } from '../../store/useStore';
 import styles from './TreeNode.module.scss';
 
@@ -28,20 +28,29 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
   const isLeaf = !node.children || node.children.length === 0;
   const isOpenLeaf = isLeaf && leafData && leafData.id === node.id;
   const isLeafError = isLeaf && leafError && leafError.id === node.id;
-  const [isExpanded, setIsExpanded] = useState(isOpenLeaf);
+  const [isExpanded, setIsExpanded] = useState<boolean>(!!isOpenLeaf);
   const [localError, setLocalError] = useState<boolean>(!!isLeafError);
 
+  const handleFetchLeafData = useCallback(() => {
+    fetchLeafData(node.id);
+    setIsExpanded(!isExpanded);
+  }, [fetchLeafData, node.id, isExpanded]);
+
+  const handleToggleHighlight = useCallback(() => {
+    toggleHighlight(node);
+  }, [toggleHighlight, node]);
+
+  // Todo: improve if is leaf to fetch data without unhighlighting
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isLeaf) {
-      fetchLeafData(node.id);
-      setIsExpanded(true);
+      handleFetchLeafData();
     }
-    toggleHighlight(node);
+    handleToggleHighlight();
   };
 
-  const isHighlighted = highlightedNodes.has(node.id);
-  const containerRef = useRef<HTMLButtonElement>(null);
+  const isHighlighted = useMemo(() => highlightedNodes.has(node.id), [highlightedNodes, node.id]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [instruction, setInstruction] = useState<Instruction | null>(null);
 
@@ -112,11 +121,11 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
   }, [dispatch, node, mode, level, uniqueContextId, extractInstruction, attachInstruction, getPathToItem]);
 
   useEffect(() => {
-    if (isLeafError) {
-      setLocalError(true);
-      const timeout = setTimeout(() => setLocalError(false), 3000);
-      return () => clearTimeout(timeout);
-    }
+    if (!isLeafError) return;
+
+    setLocalError(true);
+    const timeout = setTimeout(() => setLocalError(false), 3000);
+    return () => clearTimeout(timeout);
   }, [isLeafError]);
 
   return (
@@ -124,10 +133,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
       <div
         className={`${styles.container} ${isHighlighted ? styles.highlighted : ''}`}
         style={{ position: 'relative' }}
+        ref={containerRef}
       >
         <button
           id={`tree-item-${node.id}`}
-          ref={containerRef}
           type="button"
           style={{ paddingLeft: level * indentPerLevel }}
           data-index={index}
@@ -150,12 +159,12 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
       )}
       {isOpenLeaf && isExpanded && <LeafData leafData={leafData} level={level} onClose={() => setIsExpanded(false)} />}
       {node.children && node.children.length > 0 && (
-        <div>
+        <>
           {node.children.map((child, index, array) => {
             const childType: ItemMode = getItemMode(node, index, array);
             return <TreeNode node={child} key={child.id} level={level + 1} mode={childType} index={index} />;
           })}
-        </div>
+        </>
       )}
     </>
   );
