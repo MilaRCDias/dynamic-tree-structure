@@ -5,3 +5,9 @@
 .tree {
   padding: 1rem;
 }
+
+.error {
+  color: var(--text-color-error);
+  background-color: var(--bg-color-error);
+  padding: 1rem;
+}
