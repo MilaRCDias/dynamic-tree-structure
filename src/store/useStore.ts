@@ -82,7 +82,6 @@ export const useStore = create<TreeState>((set, get) => ({
       const data = await getLeafData(nodeId);
       const leafNodeData = { ...data, id: nodeId };
 
-      console.log('Leaf Node Data:', data, leafNodeData);
       set((state) => ({
         leafCache: { ...state.leafCache, [nodeId]: leafNodeData },
         leafData: leafNodeData,
@@ -120,11 +119,17 @@ export const useStore = create<TreeState>((set, get) => ({
           case 'reorder-below':
             return tree.insertAfter(tree.remove(treeData, itemId), targetId, item);
           case 'make-child':
+            if (itemId === targetId) {
+              return treeData;
+            }
+
             return tree.insertChild(tree.remove(treeData, itemId), targetId, item);
           default:
             return treeData;
         }
       })();
+
+      console.info('%cupdatedTree:', 'color: green; font-size: 18px;', updatedTree);
 
       set({ treeData: updatedTree });
     }
