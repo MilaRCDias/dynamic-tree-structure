@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import { attachInstruction, extractInstruction } from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/tree-item';
 
-import { TreeAction, useStore } from '../store/useStore';
+import { TreeAction } from '../store/useStore';
 
 import { TreeNode } from '../store/useStore';
 export type TreeContextValue = {
@@ -16,11 +16,11 @@ export type TreeContextValue = {
 };
 
 export const TreeContext = createContext<TreeContextValue>({
-  dispatch: useStore.getState().dispatch,
-  uniqueContextId: useStore.getState().uniqueContextId,
-  getPathToItem: useStore.getState().getPathToItem,
-  getMoveTargets: useStore.getState().getMoveTargets,
-  getChildrenOfItem: useStore.getState().getChildrenOfItem,
+  dispatch: () => {},
+  uniqueContextId: Symbol('uniqueId'),
+  getPathToItem: () => [],
+  getMoveTargets: () => [],
+  getChildrenOfItem: () => [],
   registerTreeItem: () => {},
 });
 

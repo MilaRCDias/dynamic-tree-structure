@@ -13,7 +13,17 @@ import { createTreeItemRegistry } from '../../helpers/registerDnd';
 import { getItemMode } from '../../helpers/getItemMode';
 
 const TreeView: React.FC = () => {
-  const { treeData, fetchAndSetTreeData, loading, error, dispatch, getChildrenOfItem, uniqueContextId } = useStore();
+  const {
+    treeData,
+    fetchAndSetTreeData,
+    loading,
+    error,
+    dispatch,
+    getChildrenOfItem,
+    uniqueContextId,
+    getPathToItem,
+    getMoveTargets,
+  } = useStore();
   const { extractInstruction } = useContext(DependencyContext);
 
   useEffect(() => {
@@ -25,6 +35,7 @@ const TreeView: React.FC = () => {
   useEffect(() => {
     if (!ref.current || treeData.length === 0) return;
     invariant(ref.current);
+
     return combine(
       monitorForElements({
         canMonitor: ({ source }) => source.data.uniqueContextId === uniqueContextId,
@@ -56,8 +67,8 @@ const TreeView: React.FC = () => {
     () => ({
       dispatch,
       uniqueContextId,
-      getPathToItem: useStore.getState().getPathToItem,
-      getMoveTargets: useStore.getState().getMoveTargets,
+      getPathToItem,
+      getMoveTargets,
       getChildrenOfItem,
       registerTreeItem,
     }),
@@ -65,7 +76,7 @@ const TreeView: React.FC = () => {
   );
 
   if (loading && treeData.length === 0) return <div>Loading tree...</div>;
-  if (error) return <div>{error}</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
   if (!treeData || treeData.length === 0) return <div>No Data</div>;
 
   return (
