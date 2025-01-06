@@ -6,17 +6,13 @@ import { indentPerLevel } from '../TreeNode/TreeNode';
 interface LeafDataProps {
   leafData: TreeLeafNode | null;
   level: number;
-  onClose: () => void;
 }
 
-const LeafData: React.FC<LeafDataProps> = ({ leafData, level, onClose }) => {
+const LeafData: React.FC<LeafDataProps> = ({ leafData, level }) => {
   if (!leafData) return null;
 
   return (
     <div className={styles.additionalData} style={{ marginLeft: level * indentPerLevel }}>
-      <button onClick={onClose} className={styles.closeButton} aria-label="Close additional data">
-        X
-      </button>
       <p>
         <strong>Description:</strong> {leafData.description}
       </p>

@@ -130,11 +130,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
 
   return (
     <>
-      <div
-        className={`${styles.container} ${isHighlighted ? styles.highlighted : ''}`}
-        style={{ position: 'relative' }}
-        ref={containerRef}
-      >
+      <div className={styles.container} style={{ position: 'relative' }} ref={containerRef}>
         <button
           id={`tree-item-${node.id}`}
           type="button"
@@ -142,7 +138,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
           data-index={index}
           data-level={level}
           data-testid={`tree-item-${node.id}`}
-          className={`${styles.node} ${isLeaf ? styles.leaf : ''}`}
+          className={`${isHighlighted ? styles.highlighted : ''} ${styles.node} ${isLeaf ? styles.leaf : ''}`}
           onClick={handleClick}
         >
           <div className={styles.innerWrapper}>
@@ -157,7 +153,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
           {leafError.message}
         </div>
       )}
-      {isOpenLeaf && isExpanded && <LeafData leafData={leafData} level={level} onClose={() => setIsExpanded(false)} />}
+      {isOpenLeaf && isExpanded && <LeafData leafData={leafData} level={level} />}
       {node.children && node.children.length > 0 && (
         <>
           {node.children.map((child, index, array) => {

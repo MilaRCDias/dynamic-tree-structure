@@ -6,6 +6,10 @@
   background: none;
   border: none;
   font-size: 1rem;
+
+  &:hover {
+    background: var(--bg-color-light);
+  }
 }
 
 .label {
@@ -32,10 +36,6 @@
 .container {
   border-radius: 3;
   cursor: pointer;
-
-  &:hover {
-    background: var(--bg-color-light);
-  }
 }
 
 .error {
