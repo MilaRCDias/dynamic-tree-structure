@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <span>Dynamic Tree</span>
-      <button onClick={onToggleTheme} className={styles['theme-toggle']}>
+      <button onClick={onToggleTheme} className={styles['theme-toggle']} type="button" aria-label="toggle color mode">
         {theme === Theme.Light ? <DarkIcon /> : <LightIcon />}
       </button>
     </header>
