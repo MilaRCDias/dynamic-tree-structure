@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { useStore } from '../../../store/useStore';
 import TreeNode, { TreeNodeProps } from '../TreeNode';
 import { TreeContext, DependencyContext } from '../../../DnD/context';
+import { Mode } from '../../../helpers/getItemMode';
 
 jest.mock('../../../store/useStore', () => ({
   useStore: jest.fn(),
@@ -17,13 +18,13 @@ const mockDropIndicator = () => <div>Drop Indicator</div>;
 
 const mockNode = {
   id: faker.string.uuid(),
-  label: faker.lorem.words(3),
+  label: faker.lorem.words(1),
   children: [{ id: faker.string.uuid(), label: faker.lorem.words(2), children: [] }],
 };
 
 const defaultProps: TreeNodeProps = {
   node: mockNode,
-  mode: 'standard',
+  mode: Mode.Standart,
   level: 0,
   index: 0,
 };
@@ -36,12 +37,12 @@ const mockUseStore = {
   highlightedNodes: new Set(),
 };
 
-const renderWithProviders = (ui: React.ReactElement) => {
+const renderWithProviders = (cmp: React.ReactElement) => {
   return render(
     <TreeContext.Provider
       value={{
         dispatch: mockDispatch,
-        uniqueContextId: Symbol('uniqueContextId'),
+        uniqueContextId: Symbol(faker.string.uuid()),
         getPathToItem: jest.fn(),
         getMoveTargets: jest.fn(),
         getChildrenOfItem: jest.fn(),
@@ -55,7 +56,7 @@ const renderWithProviders = (ui: React.ReactElement) => {
           extractInstruction: mockExtractInstruction,
         }}
       >
-        {ui}
+        {cmp}
       </DependencyContext.Provider>
     </TreeContext.Provider>
   );
@@ -95,14 +96,15 @@ describe('TreeNode Component', () => {
   });
 
   it('renders LeafData when a leaf node is expanded', () => {
+    const mockDescription = faker.lorem.words(3);
     (useStore as unknown as jest.Mock).mockReturnValue({
       ...mockUseStore,
-      leafData: { id: mockNode.id, description: 'Mock Description' },
+      leafData: { id: mockNode.id, description: mockDescription },
     });
 
     renderWithProviders(<TreeNode {...defaultProps} node={{ ...mockNode, children: [] }} />);
 
-    expect(screen.getByText((content) => content.includes('Mock Description'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes(mockDescription))).toBeInTheDocument();
   });
 
   it('removes highlight on second click', () => {
@@ -120,17 +122,18 @@ describe('TreeNode Component', () => {
 
   it('displays an error message when leafError exists', async () => {
     const leafId = mockNode.children[0].id;
+    const mockErroMessage = 'Error fetching leaf data';
     const mockFetchLeafData = jest.fn(() => {
       (useStore as unknown as jest.Mock).mockReturnValueOnce({
         ...mockUseStore,
-        leafError: { id: leafId, message: 'Error fetching leaf data' },
+        leafError: { id: leafId, message: mockErroMessage },
       });
     });
 
     (useStore as unknown as jest.Mock).mockReturnValue({
       ...mockUseStore,
       fetchLeafData: mockFetchLeafData,
-      leafError: { id: leafId, message: 'Error fetching leaf data' },
+      leafError: { id: leafId, message: mockErroMessage },
     });
 
     renderWithProviders(<TreeNode {...defaultProps} />);
@@ -139,7 +142,7 @@ describe('TreeNode Component', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Error fetching leaf data')).toBeInTheDocument();
+      expect(screen.getByText(mockErroMessage)).toBeInTheDocument();
     });
   });
 });
