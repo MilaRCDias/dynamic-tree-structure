@@ -1,11 +1,10 @@
 import { createContext } from 'react';
-
 import { attachInstruction, extractInstruction } from '@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item';
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/tree-item';
 
 import { TreeAction } from '../store/useStore';
-
 import { TreeNode } from '../store/useStore';
+
 export type TreeContextValue = {
   dispatch: (action: TreeAction) => void;
   uniqueContextId: symbol;

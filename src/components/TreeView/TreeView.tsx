@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import styles from './TreeView.module.scss';
-import { useStore } from '../../store/useStore';
-import TreeNode from '../TreeNode';
-
 import invariant from 'tiny-invariant';
-
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 
+import styles from './TreeView.module.scss';
+import { useStore } from '../../store/useStore';
+import TreeNode from '../TreeNode';
 import { DependencyContext, TreeContext } from '../../DnD/context';
 import { createTreeItemRegistry } from '../../helpers/registerDnd';
 import { getItemMode } from '../../helpers/getItemMode';
@@ -75,6 +73,7 @@ const TreeView: React.FC = () => {
     [dispatch, uniqueContextId, getChildrenOfItem]
   );
 
+  // Todo: empty state and loading and error UI components
   if (loading && treeData.length === 0) return <div>Loading tree...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
   if (!treeData || treeData.length === 0) return <div>No Data</div>;
