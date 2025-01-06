@@ -1,5 +1,5 @@
 const TREE_DATA_URL = process.env.REACT_APP_TREE_DATA_URL || 'https://ubique.img.ly/frontend-tha/data.json';
-const ENTRY_DATA_URL = process.env.REACT_APP_ENTRY_DATA_URL || 'https://ubique.img.ly/frontend-tha/entries/';
+const LEAF_DATA_URL = process.env.REACT_APP_LEAF_DATA_URL || 'https://ubique.img.ly/frontend-tha/entries/';
 
 // todo: include zod for validation
 export async function getTreeData() {
@@ -12,7 +12,7 @@ export async function getTreeData() {
 }
 
 export async function getLeafData(id: string) {
-  const url = `${ENTRY_DATA_URL}${id}.json`;
+  const url = `${LEAF_DATA_URL}${id}.json`;
   const response = await fetch(url);
 
   if (!response.ok) {
