@@ -2,6 +2,8 @@
 
 This application provides a dynamic tree view structure with various functionalities such as fetching leaf data, highlighting nodes, and handling drag-and-drop operations. The application consists of a header and a tree view component.
 
+Deployed version can be seen [here](https://dynamic-tree-structure.netlify.app/)
+
 ## What's inside?
 
 - [Quick start](#quick-start)
