@@ -1,9 +1,9 @@
-const TREE_DATA_URL = process.env.REACT_APP_TREE_DATA_URL || 'https://ubique.img.ly/frontend-tha/data.json';
-const LEAF_DATA_URL = process.env.REACT_APP_LEAF_DATA_URL || 'https://ubique.img.ly/frontend-tha/entries/';
+const TREE_DATA_URL = process.env.REACT_APP_TREE_DATA_URL;
+const LEAF_DATA_URL = process.env.REACT_APP_LEAF_DATA_URL;
 
 // todo: include zod for validation
 export async function getTreeData() {
-  const response = await fetch(TREE_DATA_URL);
+  const response = await fetch(`${TREE_DATA_URL}`);
 
   if (!response.ok) {
     throw new Error(`Error fetching tree data: ${response.statusText}`);
