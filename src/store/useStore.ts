@@ -130,8 +130,7 @@ export const useStore = create<TreeState>((set, get) => ({
       })();
 
       console.info('%cupdatedTree:', 'color: green; font-size: 18px;', updatedTree);
-
-      set({ treeData: updatedTree });
+      set({ highlightedNodes: new Set(), treeData: updatedTree });
     }
   },
 
@@ -221,6 +220,24 @@ const createTreeManipulationHelpers = () => ({
     }
   },
   getMoveTargets(data: TreeNode[], itemId: string): TreeNode[] {
+    // TODO: improve for large tree structures this can increase memory usage and cause a stack overflow
+    /* const targets = [];
+
+    const searchStack = Array.from(data);
+    while (searchStack.length > 0) {
+      const node = searchStack.pop();
+
+      if (!node || node.id === itemId) {
+        continue;
+      }
+  
+      targets.push(node);
+
+      node.children.forEach((childNode) => searchStack.push(childNode));
+    }
+
+    return targets;
+     */
     return data
       .filter((node) => node.id !== itemId)
       .flatMap((node) => {

@@ -73,7 +73,7 @@ const TreeView: React.FC = () => {
     [dispatch, uniqueContextId, getChildrenOfItem]
   );
 
-  // Todo: empty state and loading and error UI components
+  // TODO: empty state and loading and error UI components
   if (loading && treeData.length === 0) return <div>Loading tree...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
   if (!treeData || treeData.length === 0) return <div>No Data</div>;
