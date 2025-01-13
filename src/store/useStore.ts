@@ -220,30 +220,24 @@ const createTreeManipulationHelpers = () => ({
     }
   },
   getMoveTargets(data: TreeNode[], itemId: string): TreeNode[] {
-    // TODO: improve for large tree structures this can increase memory usage and cause a stack overflow
-    /* const targets = [];
+    const stack: TreeNode[] = [...data]; // Start with all nodes at the root level
+    const targets: TreeNode[] = [];
 
-    const searchStack = Array.from(data);
-    while (searchStack.length > 0) {
-      const node = searchStack.pop();
+    while (stack.length > 0) {
+      const node = stack.pop();
 
       if (!node || node.id === itemId) {
         continue;
       }
-  
+
       targets.push(node);
 
-      node.children.forEach((childNode) => searchStack.push(childNode));
+      if (node.children) {
+        stack.push(...node.children);
+      }
     }
 
     return targets;
-     */
-    return data
-      .filter((node) => node.id !== itemId)
-      .flatMap((node) => {
-        const childrenTargets = this.getMoveTargets(node.children || [], itemId);
-        return [node, ...childrenTargets];
-      });
   },
   getChildrenOfItem(data: TreeNode[], itemId: string): TreeNode[] {
     const node = this.find(data, itemId);
