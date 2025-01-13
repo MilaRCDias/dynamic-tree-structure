@@ -8,12 +8,14 @@ export enum Mode {
   Standart = 'standard',
 }
 
+const lastItemIndex = 1;
+
 export function getItemMode(node: TreeNode, index: number, array: TreeNode[]): ItemMode {
   if (node.children.length) {
     return Mode.Expanded;
   }
 
-  if (index === array.length - 1) {
+  if (index === array.length - lastItemIndex) {
     return Mode.LastInGroup;
   }
 

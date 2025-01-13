@@ -130,7 +130,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
 
   return (
     <>
-      <div className={styles.container} style={{ position: 'relative' }} ref={containerRef}>
+      <section className={styles.container} style={{ position: 'relative' }} ref={containerRef}>
         <button
           id={`tree-item-${node.id}`}
           type="button"
@@ -143,15 +143,15 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, mode, level, index }) => {
         >
           <div className={styles.innerWrapper}>
             {isLeaf && <span className={styles.leafIcon}>🍃</span>}
-            <span className={styles.label}>{node.label}</span>
+            <p className={styles.label}>{node.label}</p>
           </div>
           {instruction ? <DropIndicator instruction={instruction} /> : null}
         </button>
-      </div>
+      </section>
       {isLeafError && localError && (
-        <div className={styles.error} style={{ marginLeft: level * indentPerLevel }}>
+        <p className={styles.error} style={{ marginLeft: level * indentPerLevel }}>
           {leafError.message}
-        </div>
+        </p>
       )}
       {isOpenLeaf && isExpanded && <LeafData leafData={leafData} level={level} />}
       {node.children && node.children.length > 0 && (
