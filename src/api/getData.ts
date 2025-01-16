@@ -12,7 +12,7 @@ export async function getTreeData() {
 }
 
 export async function getLeafData(id: string) {
-  const url = `${LEAF_DATA_URL}${id}.json`;
+  const url = `${LEAF_DATA_URL}${id}`;
   const response = await fetch(url);
 
   if (!response.ok) {
