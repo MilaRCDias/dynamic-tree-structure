@@ -1,6 +1,6 @@
 # Dynamic tree structure 
 
-This application provides a dynamic tree view structure with various functionalities such as fetching leaf data, highlighting nodes, and handling drag-and-drop operations. The application consists of a header and a tree view component.
+This application provides a dynamic tree view structure with various functionalities such as fetching leaf data, highlighting nodes, and handling drag-and-drop operations. The application consists of a header and a tree view component. It is a practical usage of the [Pragmatic drag and drop](https://github.com/atlassian/pragmatic-drag-and-drop), followed by their example in their docs.
 
 Deployed version can be seen [here](https://dynamic-tree-structure.netlify.app/)
 
@@ -31,7 +31,7 @@ run command:
 $ yarn
 ```
 
-3. Create a `.env.local` file and add the API url variables values, see `.env.example` for the variables names.
+3. Create a `.env.local` file and add the API url variables values, see `.env.example` for the variables names. I deployed a mock API to testing propose, or you can use your own.
 
 
 4. To run it in development mode:
